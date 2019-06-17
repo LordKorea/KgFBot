@@ -69,13 +69,18 @@ class DeckEditModule(Module):
 
         if deck not in self._decks:
             await self._error(channel, "Unknown Deck",
-                              "This deck name is unknown.")
+                              "That deck name is unknown.")
             return
         deck_name = deck
         deck = self._decks[deck]
 
         if args[0] == "stats":
             await self._cmd_stats(msg.channel, deck)
+
+        if not deck.public and not admin:
+            await self._error(channel, "Private Deck", "This deck is private.")
+
+        # TODO
 
     async def _cmd_list(self, channel):
         """Handles the list subcommand.
@@ -117,9 +122,9 @@ class DeckEditModule(Module):
         """
         stats = deck.card_stats()
 
-        fmt = "%d cards total (%d statements, %d objects, %d verbs)"
+        fmt = "%d cards total (%d statements, %d objects, %d verbs), Public: %r"
         await channel.send(fmt % (stats["TOTAL"], stats["STATEMENT"],
-                                  stats["OBJECT"], stats["VERB"]))
+                                  stats["OBJECT"], stats["VERB"], deck.public))
 
     async def _input(self, author, channel):
         """Attempts to wait for a message by the given author.

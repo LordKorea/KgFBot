@@ -53,6 +53,6 @@ class Deck:
         if "__class" in j and j["__class"] == "Deck":
             del j["__class"]
             o = Deck()
-            o.__dict__ = j
+            o.__dict__.update(j)
             return o
         return j

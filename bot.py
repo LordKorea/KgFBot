@@ -1,5 +1,6 @@
 from misc.adapter import log
 from misc.config import Config
+from modules.deckedit import DeckEditModule
 import discord
 
 
@@ -18,7 +19,7 @@ class Bot:
 
         log("Loading modules...")
         self.modules = [
-            # Add modules here...
+            DeckEditModule(self, self.bot)
         ]
 
         log("Initialization complete, %d modules loaded." % len(self.modules))

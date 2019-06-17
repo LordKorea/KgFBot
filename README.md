@@ -1,6 +1,6 @@
-# BaseBot
+# KgFBot
 
-A basic framework for discord bots using python.
+A bot for managing a [KgF](https://gitlab.com/LordKorea/KgF/) deck.
 
 ## Requirements
 

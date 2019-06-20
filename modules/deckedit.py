@@ -1,4 +1,6 @@
 import asyncio
+import discord
+import io
 from json import load, dump
 from misc.util import create_embed, log
 from model.deck import Deck
@@ -43,11 +45,13 @@ class DeckEditModule(Module):
         if cmd != "kgf":
             return
 
-        syntax = "Syntax: `.kgf <list" \
+        syntax = "Syntax: .kgf <list" \
                  + "|create <deck>" \
                  + "|remove-deck <deck>" \
                  + "|stats <deck>" \
-                 + "|add <deck> <type> <text...>>`"
+                 + "|add <deck> <type> <text...>" \
+                 + "|download <deck>" \
+                 + "|export <deck>>"
 
         if len(args) == 0:
             await msg.channel.send(syntax)
@@ -81,6 +85,9 @@ class DeckEditModule(Module):
         if args[0] == "stats":
             await self._cmd_stats(msg.channel, deck)
 
+        if args[0] == "download":
+            await self._cmd_download(msg.channel, deck, deck_name)
+
         if args[0] == "add" and len(args) >= 4:
             await self._cmd_add(msg.channel, deck, args[2], " ".join(args[3:]))
 
@@ -90,6 +97,22 @@ class DeckEditModule(Module):
             else:
                 await self._perm_error(msg.channel)
 
+    async def _cmd_download(self, channel, deck, deckname):
+        """Handles the download subcommand.
+
+        Args:
+            channel: The channel in which the command was executed.
+            deck: The requested deck.
+            deckname: The name of the requested deck.
+        """
+        desc = "KgF Deck (DO NOT USE THIS FILE TO PLAY)\r\n\r\n"
+        fmt = "#%d (%s) -- %s\r\n"
+        for i, card in enumerate(deck.cards):
+            desc += fmt % (i, card[0], card[1])
+        fp = discord.File(io.BytesIO(desc.encode()), deckname + ".txt")
+        await channel.send("Evaluation Download -- Not usable for playing",
+                           file=fp)
+
     async def _cmd_remove_deck(self, channel, deckname):
         """Handles the remove-deck subcommand.
 
@@ -98,6 +121,7 @@ class DeckEditModule(Module):
             deckname: The name of the deck.
         """
         del self._decks[deckname]
+        self.save_decks()
         await channel.send("Deck removed.")
 
     async def _cmd_list(self, channel):
@@ -142,6 +166,7 @@ class DeckEditModule(Module):
         """
         try:
             deck.add_card(type, text)
+            self.save_decks()
             embed = create_embed("New " + type, "`%s`" % text, 0x00AA00)
             await channel.send(embed=embed)
         except ValueError as e:

@@ -1,4 +1,5 @@
 {
     "admins": [],
-    "game-presence": "Skynet"
+    "game-presence": "Skynet",
+    "search-result-limit": 10
 }

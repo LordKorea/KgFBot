@@ -25,6 +25,10 @@ class DeckEditModule(Module):
         if not exists(self._deck_file):
             self.save_decks()
 
+        # Set search result limit
+        self._results_limit = self._frontend.config.get("search-result-limit",
+                                                        10)
+
         # Load the decks from disk
         with open(self._deck_file, "r") as f:
             self._decks = load(f, object_hook=Deck.unjson)
@@ -50,6 +54,7 @@ class DeckEditModule(Module):
                  + "|remove-deck <deck>" \
                  + "|stats <deck>" \
                  + "|add <deck> <type> <text...>" \
+                 + "|search <deck> <query...>" \
                  + "|delete <deck> <id>" \
                  + "|download <deck>" \
                  + "|export <deck>>"
@@ -95,6 +100,9 @@ class DeckEditModule(Module):
 
         if args[0] == "add" and len(args) >= 4:
             await self._cmd_add(msg.channel, deck, args[2], " ".join(args[3:]))
+
+        if args[0] == "search" and len(args) >= 3:
+            await self._cmd_search(msg.channel, deck, " ".join(args[2:]))
 
         if args[0] == "delete" and len(args) == 3:
             try:
@@ -215,6 +223,33 @@ class DeckEditModule(Module):
             await channel.send(embed=embed)
         except ValueError as e:
             await self._error(channel, "Could Not Add", str(e))
+
+    async def _cmd_search(self, channel, deck, query):
+        """Handles the search subcommand.
+
+        Args:
+            channel: The channel in which the command was executed.
+            deck: The requested deck.
+            query: The search query.
+        """
+        results = []
+        search_results = 0
+        query = query.lower()
+        for id, entry in enumerate(deck.cards):
+            _, card = entry
+            if query in card.lower():
+                if search_results < self._results_limit:
+                    results.append((id, card))
+                search_results += 1
+        title = "Search Results"
+        if search_results > self._results_limit:
+            title += " (showing first %d of %d results)" % (self._results_limit,
+                                                            search_results)
+        if search_results == 0:
+            title = "No Results"
+        msg = "\n".join(["#%d: `%s`" % (id, card) for id, card in results])
+        embed = create_embed(title, msg, 0x00AA00)
+        await channel.send(embed=embed)
 
     async def _cmd_stats(self, channel, deck):
         """Handles the stats subcommand.

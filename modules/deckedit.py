@@ -50,6 +50,7 @@ class DeckEditModule(Module):
                  + "|remove-deck <deck>" \
                  + "|stats <deck>" \
                  + "|add <deck> <type> <text...>" \
+                 + "|delete <deck> <id>" \
                  + "|download <deck>" \
                  + "|export <deck>>"
 
@@ -74,6 +75,7 @@ class DeckEditModule(Module):
                 await self._cmd_create(msg.channel, deck)
             else:
                 await self._perm_error(msg.channel)
+            return
 
         if deck not in self._decks:
             await self._error(msg.channel, "Unknown Deck",
@@ -88,14 +90,41 @@ class DeckEditModule(Module):
         if args[0] == "download":
             await self._cmd_download(msg.channel, deck, deck_name)
 
+        if args[0] == "export":
+            await self._cmd_export(msg.channel, deck, deck_name)
+
         if args[0] == "add" and len(args) >= 4:
             await self._cmd_add(msg.channel, deck, args[2], " ".join(args[3:]))
+
+        if args[0] == "delete" and len(args) == 3:
+            try:
+                id = int(args[2])
+            except:
+                pass
+            else:
+                await self._cmd_delete(msg.channel, deck, id)
 
         if args[0] == "remove-deck":
             if admin:
                 await self._cmd_remove_deck(msg.channel, deck_name)
             else:
                 await self._perm_error(msg.channel)
+            return
+
+    async def _cmd_delete(self, channel, deck, id):
+        """Handles the delete subcommand.
+
+        Args:
+            channel: The channel in which the command was executed.
+            deck: The deck that was requested.
+            id: The card ID to delete.
+        """
+        if len(deck.cards) <= id or id < 0:
+            await self._error(channel, "Invalid ID", "This ID is invalid.")
+            return
+
+        del deck.cards[id]
+        await channel.send("Card Removed -- WARNING: Card IDs have changed!")
 
     async def _cmd_download(self, channel, deck, deckname):
         """Handles the download subcommand.
@@ -112,6 +141,21 @@ class DeckEditModule(Module):
         fp = discord.File(io.BytesIO(desc.encode()), deckname + ".txt")
         await channel.send("Evaluation Download -- Not usable for playing",
                            file=fp)
+
+    async def _cmd_export(self, channel, deck, deckname):
+        """Handles the export subcommand.
+
+        Args:
+            channel: The channel in which the command was executed.
+            deck: The requested deck.
+            deckname: The name of the requested deck.
+        """
+        desc = ""
+        fmt = "%s\t%s\n"
+        for card in deck.cards:
+            desc += fmt % (card[1], card[0])
+        fp = discord.File(io.BytesIO(desc.encode()), deckname + ".tsv")
+        await channel.send("Deck Export -- Ready for playing", file=fp)
 
     async def _cmd_remove_deck(self, channel, deckname):
         """Handles the remove-deck subcommand.

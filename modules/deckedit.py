@@ -43,7 +43,7 @@ class DeckEditModule(Module):
         if cmd != "kgf":
             return
 
-        syntax = "Syntax: `.kgf <list|create <deck>|stats <deck>>`"
+        syntax = "Syntax: `.kgf <list|create <deck>|stats <deck>|add <deck> <type> <text...>>`"
 
         if len(args) == 0:
             await msg.channel.send(syntax)
@@ -68,7 +68,7 @@ class DeckEditModule(Module):
                 await self._perm_error(msg.channel)
 
         if deck not in self._decks:
-            await self._error(channel, "Unknown Deck",
+            await self._error(msg.channel, "Unknown Deck",
                               "That deck name is unknown.")
             return
         deck_name = deck
@@ -77,7 +77,8 @@ class DeckEditModule(Module):
         if args[0] == "stats":
             await self._cmd_stats(msg.channel, deck)
 
-        # TODO
+        if args[0] == "add" and len(args) >= 4:
+            await self._cmd_add(msg.channel, deck, args[2], " ".join(args[3:]))
 
     async def _cmd_list(self, channel):
         """Handles the list subcommand.
@@ -110,6 +111,22 @@ class DeckEditModule(Module):
         self.save_decks()
         await channel.send("Deck created.")
 
+    async def _cmd_add(self, channel, deck, type, text):
+        """Handles the add subcommand.
+
+        Args:
+            channel: The channel in which the command was executed.
+            deck: The requested deck.
+            type: The requested card type.
+            text: The requested text for the card.
+        """
+        try:
+            deck.add_card(type, text)
+            embed = create_embed("New " + type, text, 0x00AA00)
+            await channel.send(embed=embed)
+        except ValueError as e:
+            await self._error(channel, "Could Not Add", str(e))
+
     async def _cmd_stats(self, channel, deck):
         """Handles the stats subcommand.
 
@@ -119,7 +136,7 @@ class DeckEditModule(Module):
         """
         stats = deck.card_stats()
 
-        fmt = "%d cards total (%d statements, %d objects, %d verbs)"
+        fmt = "%d card(s) total (%d statement(s), %d object(s), %d verb(s))"
         await channel.send(fmt % (stats["TOTAL"], stats["STATEMENT"],
                                   stats["OBJECT"], stats["VERB"]))
 

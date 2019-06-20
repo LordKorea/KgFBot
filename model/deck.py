@@ -11,6 +11,8 @@ class Deck:
             category: The card category.
             text: The card text.
         """
+        category = category.upper()
+
         # Sanity check for categories
         if category not in {"STATEMENT", "OBJECT", "VERB"}:
             raise ValueError("Invalid category")
@@ -24,7 +26,11 @@ class Deck:
         if gaps == 0 and category == "STATEMENT":
             raise ValueError("Need at least one gap in statements")
 
-        self.cards.append((category, text))
+        card = (category, text)
+        if card in self.cards:
+            raise ValueError("Card already existing")
+
+        self.cards.append(card)
 
     def card_stats(self):
         """Returns card stats.

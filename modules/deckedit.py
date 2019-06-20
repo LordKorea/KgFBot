@@ -77,9 +77,6 @@ class DeckEditModule(Module):
         if args[0] == "stats":
             await self._cmd_stats(msg.channel, deck)
 
-        if not deck.public and not admin:
-            await self._error(channel, "Private Deck", "This deck is private.")
-
         # TODO
 
     async def _cmd_list(self, channel):
@@ -122,9 +119,9 @@ class DeckEditModule(Module):
         """
         stats = deck.card_stats()
 
-        fmt = "%d cards total (%d statements, %d objects, %d verbs), Public: %r"
+        fmt = "%d cards total (%d statements, %d objects, %d verbs)"
         await channel.send(fmt % (stats["TOTAL"], stats["STATEMENT"],
-                                  stats["OBJECT"], stats["VERB"], deck.public))
+                                  stats["OBJECT"], stats["VERB"]))
 
     async def _input(self, author, channel):
         """Attempts to wait for a message by the given author.

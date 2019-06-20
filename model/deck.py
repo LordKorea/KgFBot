@@ -3,7 +3,6 @@ class Deck:
     def __init__(self):
         """Constructor."""
         self.cards = []
-        self.public = False
 
     def add_card(self, category, text):
         """Adds a card to the deck.

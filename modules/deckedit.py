@@ -142,7 +142,7 @@ class DeckEditModule(Module):
         """
         try:
             deck.add_card(type, text)
-            embed = create_embed("New " + type, text, 0x00AA00)
+            embed = create_embed("New " + type, "`%s`" % text, 0x00AA00)
             await channel.send(embed=embed)
         except ValueError as e:
             await self._error(channel, "Could Not Add", str(e))

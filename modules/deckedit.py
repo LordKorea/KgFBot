@@ -43,7 +43,11 @@ class DeckEditModule(Module):
         if cmd != "kgf":
             return
 
-        syntax = "Syntax: `.kgf <list|create <deck>|stats <deck>|add <deck> <type> <text...>>`"
+        syntax = "Syntax: `.kgf <list" \
+                 + "|create <deck>" \
+                 + "|remove-deck <deck>" \
+                 + "|stats <deck>" \
+                 + "|add <deck> <type> <text...>>`"
 
         if len(args) == 0:
             await msg.channel.send(syntax)
@@ -79,6 +83,22 @@ class DeckEditModule(Module):
 
         if args[0] == "add" and len(args) >= 4:
             await self._cmd_add(msg.channel, deck, args[2], " ".join(args[3:]))
+
+        if args[0] == "remove-deck":
+            if admin:
+                await self._cmd_remove_deck(msg.channel, deck_name)
+            else:
+                await self._perm_error(msg.channel)
+
+    async def _cmd_remove_deck(self, channel, deckname):
+        """Handles the remove-deck subcommand.
+
+        Args:
+            channel: The channel in which the command was executed.
+            deckname: The name of the deck.
+        """
+        del self._decks[deckname]
+        await channel.send("Deck removed.")
 
     async def _cmd_list(self, channel):
         """Handles the list subcommand.

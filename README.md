@@ -20,3 +20,7 @@ same directory as `start.sh`.
 
 To stop the bot, send a keyboard interrupt (^C on linux). The bot will then shut
 down. **This might take a bit!**
+
+## Assets
+
+Snail icons available under [CC0](https://creativecommons.org/publicdomain/zero/1.0/). Palette swap of icon available [here](https://publicdomainvectors.org/en/free-clipart/Simple-snail/67150.html) (`favicon.ico`).

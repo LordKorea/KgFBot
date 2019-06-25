@@ -34,7 +34,8 @@ For files adapted from other projects, exceptions to above license apply.
 Adapted from: https://gitlab.com/LordKorea/KgF
 
 MIT License
-Copyright (c) 2017-2018 LordKorea
+Copyright (c) 2017-2019 LordKorea
+Copyright (c) 2019 Arc676/Alessandro Vinciguerra
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

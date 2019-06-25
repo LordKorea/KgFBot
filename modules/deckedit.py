@@ -55,7 +55,7 @@ class DeckEditModule(Module):
                  + "|remove-deck <deck>" \
                  + "|stats <deck>" \
                  + "|add <deck> <type> <text...>" \
-		 + "|replace <deck> <id> <type> <text...>" \
+                 + "|replace <deck> <id> <type> <text...>" \
                  + "|search <deck> <query...>" \
                  + "|delete <deck> <id>" \
                  + "|download <deck>" \
@@ -251,7 +251,8 @@ class DeckEditModule(Module):
             deck.add_card(type, text)
             deck.cards[id] = deck.cards.pop()
             self.save_decks()
-            embed = create_embed("Replaced card #%d with %s" % (id, type), "`%s`" % text, 0x00AA00)
+            embed = create_embed("Replaced card #%d with %s" % (id, type),
+                                 "`%s`" % text, 0x00AA00)
             await channel.send(embed=embed)
         except ValueError as e:
             await self._error(channel, "Could Not Add", str(e))

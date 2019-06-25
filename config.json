@@ -1,5 +1,6 @@
 {
     "admins": [],
+    "cmd-prefix": ".",
     "game-presence": "Skynet",
     "search-result-limit": 10
 }

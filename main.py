@@ -3,6 +3,6 @@ from bot import Bot
 
 if __name__ == "__main__":
     rf = Bot()
-    bot = create_bot(rf)
+    bot = create_bot(rf, rf.config.get("cmd-prefix", "."))
     rf.bot = bot
     connect_bot(bot)

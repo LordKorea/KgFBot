@@ -54,6 +54,7 @@ class DeckEditModule(Module):
                  + "|remove-deck <deck>" \
                  + "|stats <deck>" \
                  + "|add <deck> <type> <text...>" \
+		 + "|replace <deck> <id> <type> <text...>" \
                  + "|search <deck> <query...>" \
                  + "|delete <deck> <id>" \
                  + "|download <deck>" \
@@ -100,6 +101,14 @@ class DeckEditModule(Module):
 
         if args[0] == "add" and len(args) >= 4:
             await self._cmd_add(msg.channel, deck, args[2], " ".join(args[3:]))
+
+        if args[0] == "replace" and len(args) >= 5:
+            try:
+                id = int(args[2])
+            except:
+                pass
+            else:
+                await self._cmd_replace(msg.channel, deck, id, args[3], " ".join(args[4:]))
 
         if args[0] == "search" and len(args) >= 3:
             await self._cmd_search(msg.channel, deck, " ".join(args[2:]))
@@ -220,6 +229,28 @@ class DeckEditModule(Module):
             deck.add_card(type, text)
             self.save_decks()
             embed = create_embed("New " + type, "`%s`" % text, 0x00AA00)
+            await channel.send(embed=embed)
+        except ValueError as e:
+            await self._error(channel, "Could Not Add", str(e))
+
+    async def _cmd_replace(self, channel, deck, id, type, text):
+        """Handles the replace subcommand.
+
+        Args:
+            channel: The channel in which the command was executed.
+            deck: The deck that was requested.
+            id: The card ID to replace.
+            type: The requested card type.
+            text: The requested text for the card.
+        """
+        if len(deck.cards) <= id or id < 0:
+            await self._error(channel, "Invalid ID", "This ID is invalid.")
+            return
+        try:
+            deck.add_card(type, text)
+            deck.cards[id] = deck.cards.pop()
+            self.save_decks()
+            embed = create_embed("Replaced card #%d with %s" % (id, type), "`%s`" % text, 0x00AA00)
             await channel.send(embed=embed)
         except ValueError as e:
             await self._error(channel, "Could Not Add", str(e))

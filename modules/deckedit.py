@@ -48,6 +48,7 @@ class DeckEditModule(Module):
         """
         if cmd != "kgf":
             return
+        await msg.channel.trigger_typing()
 
         syntax = "Syntax: .kgf <list" \
                  + "|create <deck>" \

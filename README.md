@@ -23,4 +23,4 @@ down. **This might take a bit!**
 
 ## Assets
 
-Snail icons available under [CC0](https://creativecommons.org/publicdomain/zero/1.0/). Palette swap of icon available [here](https://publicdomainvectors.org/en/free-clipart/Simple-snail/67150.html) (`favicon.ico`).
+Snail icons available under [CC0](https://creativecommons.org/publicdomain/zero/1.0/). Palette swap of icon available [here](https://publicdomainvectors.org/en/free-clipart/Simple-snail/67150.html) (`img/snail.*`).

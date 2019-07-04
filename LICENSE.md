@@ -76,3 +76,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
+
+## License of snail icon img/snail.\*
+
+Snail icons available under [CC0](https://creativecommons.org/publicdomain/zero/1.0/). Palette swap of icon available [here](https://publicdomainvectors.org/en/free-clipart/Simple-snail/67150.html).
